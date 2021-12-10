@@ -20,6 +20,8 @@ public class Agent3 {
     public int shortestPathFound = 0; // THE LENGTH OF THE SHORTEST PATH FOUND BY THE AGENT WHILE TRAVERSING THE MAZE
     public long runtime = 0; // THE RUNTIME OF THE PROGRAM TO FIND A PATH TO THE GOAL
 
+	public int direction = -1;
+
     // USED TO PRINT THE ABOVE STATS FOR THE PROJECT
     public void printStats() {
     	System.out.println("Statistics for Maze Solution");
@@ -218,45 +220,19 @@ public class Agent3 {
 		return null; // MAZE IS UNSOLVABLE ):
 	}
 	
-	public void writeMatrix(File filename, Maze maze){
+	public void writeMatrix(File filename, Maze maze, int direction){
         try{
             FileWriter buffwrite = new FileWriter(filename, true);
 
-			/*
-            for(int i=0; i<matrix.length; i++){
-                for(int j=0; j<matrix[i].length; j++){
-                    if(j== matrix[i].length-1) buffwrite.write(matrix[i][j]+ "\n");
-
-                    else buffwrite.write(matrix[i][j]+ ",");
-                }
-
-				if(i == matrix.length-1) buffwrite.write("\n");
-            }
-            buffwrite.flush();
-			*/
-
-			//toString();
-
 			buffwrite.write(maze.toString());
+			//buffwrite.write("\n");
+			buffwrite.write(String.valueOf(direction));
+			buffwrite.write("\n");
 			buffwrite.close();
 			//System.out.println("Write Matrix SUCCESS!\n");
 
         } catch( IOException e){
             System.out.println("Write Matrix Error!\n");
-        }
-    }
-
-
-	public void writeAction(File filename, int direction){
-        try{
-            FileWriter buffwrite = new FileWriter(filename, true);
-
-			buffwrite.write(String.valueOf(direction));
-			buffwrite.write("\n");
-			buffwrite.close();
-
-        } catch( IOException e){
-            System.out.println("Write Action Error!\n");
         }
     }
 
@@ -459,11 +435,21 @@ public class Agent3 {
 		CellInfo start = mazeRunner.maze.getCell(0, 0);
 		LinkedList<CellInfo> plannedPath = mazeRunner.plan(start); // STORES OUR BEST PATH THROUGH THE MAZE
 		
+		double prev_y = 0.0;
+		double prev_x = 0.0;
+
 		// MAIN LOOP FOR AGENT TO FOLLOW AFTER FIRST PLANNING PHASE
 		while (true) {
 
 			// EXTRACT THE NEXT CELL IN THE PLANNED PATH
 			CellInfo currCell = plannedPath.poll();
+
+			//0=up, 1=down, 2=left, 3=right
+			if(currCell.getPos().getY() == prev_y-1 ) mazeRunner.direction = 0;
+			else if(currCell.getPos().getY() == prev_y+1) mazeRunner.direction = 1;
+			else if(currCell.getPos().getX() == prev_x-1) mazeRunner.direction = 2;
+			else if(currCell.getPos().getX() == prev_x+1) mazeRunner.direction = 3;
+			
 			
 			// DEBUGGING STATEMENT
 			// System.out.println("Agent is currently in " + currCell.getPos().getX() + ", " + currCell.getPos().getY());
@@ -535,7 +521,14 @@ public class Agent3 {
 				continue;
 			}
 
-			mazeRunner.writeMatrix(filename, mazeRunner.maze);//, mazeRunner.maze);
+			mazeRunner.writeMatrix(filename, mazeRunner.maze, mazeRunner.direction);//, mazeRunner.maze);
+
+			//mazeRunner.writeAction(filename, mazeRunner.direction);
+
+			prev_y = currCell.getPos().getY();
+			prev_x = currCell.getPos().getX();
+
+			
 			
 			// IF WE HAVE SUCCESSFULLY MOVED TO ANOTHER CELL, WE UPDATE THE TRAJECTORY LENGTH
 			mazeRunner.trajectoryLength++;
@@ -614,20 +607,11 @@ public class Agent3 {
 
 		File filename = new File("matrix.txt");
 
-		File action_file = new File("action.txt");
+		
 
 		try{
 			//File filename = new File("matrix.txt");
 			if(filename.createNewFile()) System.out.println("File create: " + filename.getName());
-			else System.out.println("File already exists.");
-		} catch (IOException e){
-			System.out.println("ERROR.");
-			e.printStackTrace();
-		}
-		
-		try{
-			//File filename = new File("matrix.txt");
-			if(action_file.createNewFile()) System.out.println("File create: " + action_file.getName());
 			else System.out.println("File already exists.");
 		} catch (IOException e){
 			System.out.println("ERROR.");
