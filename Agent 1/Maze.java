@@ -99,14 +99,17 @@ public class Maze {
         			continue;
         		}
 
-        		if (getCell(j, i).isActuallyBlocked()) {
-        			builder.append("x");
-        		} else if (getCell(j, i).isOnShortestPath()) {
-        			builder.append(">");
+        		if (getCell(j, i).isActuallyBlocked() && getCell(j, i).isVisited()) {
+        			builder.append("9");
+        		}else if (getCell(j, i).isActuallyBlocked()) {
+        			builder.append("X");
+        		} 
+                 else if (getCell(j, i).isOnShortestPath()) {
+        			builder.append("1");
         		} else if (getCell(j, i).isVisited()) {
-        			builder.append("-");
+        			builder.append("2");
         		} else {
-        			builder.append(":");
+        			builder.append("0");
         		}
 
         	}
