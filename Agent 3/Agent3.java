@@ -24,6 +24,8 @@ public class Agent3 {
 
 	public int direction = -1;
 
+	String return_str = "";
+
 
     // USED TO PRINT THE ABOVE STATS FOR THE PROJECT
     public void printStats() {
@@ -38,7 +40,31 @@ public class Agent3 {
     }
 
 
+	public void addMatrix(Maze maze, int direction){
+        
+		return_str += maze.toString();
+		return_str+= String.valueOf(direction);
+		return_str += "\n";
+    }
 
+	
+	//public void writeMatrix(File filename, Maze maze, int direction){
+	public void writeMatrix(File filename){
+		try{
+            FileWriter buffwrite = new FileWriter(filename, true);
+
+			//buffwrite.write(maze.toString());
+			//buffwrite.write("\n");
+			buffwrite.write(return_str);
+			//buffwrite.write(String.valueOf(direction));
+			//buffwrite.write("\n");
+			buffwrite.close();
+			//System.out.println("Write Matrix SUCCESS!\n");
+
+        } catch( IOException e){
+            System.out.println("Write Matrix Error!\n");
+        }
+    }
 
 	// PLANNING METHOD (AKA A SINGLE ITERATION OF A* WITHOUT PHYSICALLY MOVING THE AGENT THROUGH THE MAZE)
 	public LinkedList<CellInfo> plan(CellInfo start) {
@@ -741,9 +767,11 @@ public class Agent3 {
 				continue;
 			}
 
-			mazeRunner.writeMatrix(filename, mazeRunner.maze, mazeRunner.direction);//, mazeRunner.maze);
+			//mazeRunner.writeMatrix(filename, mazeRunner.maze, mazeRunner.direction);//, mazeRunner.maze);
 
 			//mazeRunner.writeAction(filename, mazeRunner.direction);
+
+			mazeRunner.addMatrix(mazeRunner.maze, mazeRunner.direction);
 
 			prev_y = currCell.getPos().getY();
 			prev_x = currCell.getPos().getX();
@@ -807,6 +835,9 @@ public class Agent3 {
 		}
 
 		System.out.println("Path Found!");
+
+		mazeRunner.writeMatrix(filename);
+
 		// System.out.println(mazeRunner.maze.toString());
 		mazeRunner.printStats();
 
