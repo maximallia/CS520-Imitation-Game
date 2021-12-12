@@ -22,6 +22,8 @@ public class Agent3 {
 
 	public int direction = -1;
 
+	String return_str = "";
+
     // USED TO PRINT THE ABOVE STATS FOR THE PROJECT
     public void printStats() {
     	System.out.println("Statistics for Maze Solution");
@@ -219,15 +221,25 @@ public class Agent3 {
 		// System.out.println("We've reached here for some reason.");
 		return null; // MAZE IS UNSOLVABLE ):
 	}
+
+	public void addMatrix(Maze maze, int direction){
+        
+		return_str += maze.toString();
+		return_str+= String.valueOf(direction);
+		return_str += "\n";
+    }
+
 	
-	public void writeMatrix(File filename, Maze maze, int direction){
-        try{
+	//public void writeMatrix(File filename, Maze maze, int direction){
+	public void writeMatrix(File filename){
+		try{
             FileWriter buffwrite = new FileWriter(filename, true);
 
-			buffwrite.write(maze.toString());
+			//buffwrite.write(maze.toString());
 			//buffwrite.write("\n");
-			buffwrite.write(String.valueOf(direction));
-			buffwrite.write("\n");
+			buffwrite.write(return_str);
+			//buffwrite.write(String.valueOf(direction));
+			//buffwrite.write("\n");
 			buffwrite.close();
 			//System.out.println("Write Matrix SUCCESS!\n");
 
@@ -491,6 +503,9 @@ public class Agent3 {
 					// System.out.println(mazeRunner.maze.toString());
 					return 'F';
 				}
+
+				mazeRunner.return_str= "";
+
 				badPath = false;
 				continue;
 			}
@@ -521,7 +536,9 @@ public class Agent3 {
 				continue;
 			}
 
-			mazeRunner.writeMatrix(filename, mazeRunner.maze, mazeRunner.direction);//, mazeRunner.maze);
+			//mazeRunner.writeMatrix(filename, mazeRunner.maze, mazeRunner.direction);//, mazeRunner.maze);
+
+			mazeRunner.addMatrix(mazeRunner.maze, mazeRunner.direction);
 
 			//mazeRunner.writeAction(filename, mazeRunner.direction);
 
@@ -589,8 +606,12 @@ public class Agent3 {
 		}
 
 		System.out.println("Path Found!");
+
+		mazeRunner.writeMatrix(filename);
+
 		// System.out.println(mazeRunner.maze.toString());
 		mazeRunner.printStats();
+
 
 		return 'S';
 	}
