@@ -2,6 +2,7 @@
 
 import java.util.ArrayList;
 import java.awt.Point;
+import java.awt.Point;
 
 public class Maze {
 	
@@ -82,32 +83,32 @@ public class Maze {
     }
 
     // TODO ADD TO THIS METHOD TO MAKE THE MAZE REALLY CLEAR
-    @Override
-    public String toString() {
+    //Override
+    public String toString(Point agent) {
         
-        StringBuilder builder = new StringBuilder("-----------Maze-----------\n");
+        StringBuilder builder = new StringBuilder("\n");
 
         for (int i = 0; i < rows; i++) {
         	
         	for (int j = 0; j < cols; j++) {
 
         		if (i == 0 && j == 0) {
-        			builder.append("S"); // MARK START CELL
+        			builder.append("0"); // MARK START CELL
         			continue;
         		} else if (i == rows - 1 && j == cols - 1) { // MARK GOAL CELL
-        			builder.append("G");
+        			builder.append("2");
         			continue;
         		}
 
         		if (getCell(j, i).isActuallyBlocked() && getCell(j, i).isVisited()) {
-        			builder.append("9");
+        			builder.append("-1");
         		}else if (getCell(j, i).isActuallyBlocked()) {
-        			builder.append("X");
+        			builder.append("0");
         		} 
-                 else if (getCell(j, i).isOnShortestPath()) {
+                 /*else if (getCell(j, i).isOnShortestPath()) {
         			builder.append("1");
-        		} else if (getCell(j, i).isVisited()) {
-        			builder.append("2");
+        		}*/ else if (getCell(j,i).getPos() == agent){//getCell(j, i).isVisited() ) {
+        			builder.append("1");
         		} else {
         			builder.append("0");
         		}

@@ -222,9 +222,9 @@ public class Agent3 {
 		return null; // MAZE IS UNSOLVABLE ):
 	}
 
-	public void addMatrix(Maze maze, int direction){
+	public void addMatrix(Maze maze, int direction, Point agent){
         
-		return_str += maze.toString();
+		return_str += maze.toString(agent);
 		return_str+= String.valueOf(direction);
 		return_str += "\n";
     }
@@ -538,7 +538,7 @@ public class Agent3 {
 
 			//mazeRunner.writeMatrix(filename, mazeRunner.maze, mazeRunner.direction);//, mazeRunner.maze);
 
-			mazeRunner.addMatrix(mazeRunner.maze, mazeRunner.direction);
+			mazeRunner.addMatrix(mazeRunner.maze, mazeRunner.direction, currCell.getPos());
 
 			//mazeRunner.writeAction(filename, mazeRunner.direction);
 
@@ -626,7 +626,9 @@ public class Agent3 {
 		double prob = Double.parseDouble(args[2]);
 		int successfulTrials = Integer.parseInt(args[3]);
 
-		File filename = new File("matrix.txt");
+		int maze_num = 1;
+
+		File filename = new File("proto50.txt");
 
 		
 
@@ -642,6 +644,8 @@ public class Agent3 {
 		while (successfulTrials > 0) {
 			char result = run(rowNum, colNum, prob, filename);
 			if (result == 'S') {
+				System.out.println("Maze num: "+ maze_num);
+				maze_num += 1;
 				successfulTrials--;
 			}
 		}
