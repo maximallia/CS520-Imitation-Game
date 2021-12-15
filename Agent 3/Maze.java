@@ -101,14 +101,9 @@ public class Maze {
         			continue;
         		}
 
-        		if (getCell(j, i).isActuallyBlocked() && getCell(j, i).isVisited()) {
+        		if (getCell(j, i).isBlocked()) {
         			builder.append("X");
-        		}else if (getCell(j, i).isActuallyBlocked()) {
-        			builder.append("0");
-        		} 
-                 /*else if (getCell(j, i).isOnShortestPath()) {
-        			builder.append("1");
-        		}*/ else if (getCell(j,i).getPos() == agent){//getCell(j, i).isVisited() ) {
+        		} else if (getCell(j,i).getPos() == agent){//getCell(j, i).isVisited() ) {
         			builder.append("1");
         		} else {
         			builder.append("0");
