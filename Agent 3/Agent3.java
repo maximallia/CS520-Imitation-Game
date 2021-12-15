@@ -22,9 +22,12 @@ public class Agent3 {
     public int shortestPathFound = 0; // THE LENGTH OF THE SHORTEST PATH FOUND BY THE AGENT WHILE TRAVERSING THE MAZE
     public long runtime = 0; // THE RUNTIME OF THE PROGRAM TO FIND A PATH TO THE GOAL
 
-	public int direction = -1;
+	public char[] direction = {'0','0','0','0'};
 
 	String return_str = "";
+
+	public int num_grids = 0;
+	public static int total_grids = 0;
 
 
     // USED TO PRINT THE ABOVE STATS FOR THE PROJECT
@@ -40,10 +43,18 @@ public class Agent3 {
     }
 
 
-	public void addMatrix(Maze maze, int direction){
+	public void addMatrix(Maze maze, char[] direction, Point agent){
         
-		return_str += maze.toString();
-		return_str+= String.valueOf(direction);
+		return_str += maze.toString(agent);
+
+		for (int i=0; i<direction.length; i++){
+
+			return_str+= String.valueOf(direction[i]);
+
+			direction[i] = '0';
+		}
+		num_grids += 1;
+
 		return_str += "\n";
     }
 
@@ -248,24 +259,6 @@ public class Agent3 {
 		// System.out.println("We've reached here for some reason.");
 		return null; // MAZE IS UNSOLVABLE ):
 	}
-
-
-
-	public void writeMatrix(File filename, Maze maze, int direction){
-        try{
-            FileWriter buffwrite = new FileWriter(filename, true);
-
-			buffwrite.write(maze.toString());
-			//buffwrite.write("\n");
-			buffwrite.write(String.valueOf(direction));
-			buffwrite.write("\n");
-			buffwrite.close();
-			//System.out.println("Write Matrix SUCCESS!\n");
-
-        } catch( IOException e){
-            System.out.println("Write Matrix Error!\n");
-        }
-    }
 
 
 	// SENSING METHOD
@@ -692,10 +685,10 @@ public class Agent3 {
 			
 
 			//0=up, 1=down, 2=left, 3=right
-			if(currCell.getPos().getY() == prev_y-1 ) mazeRunner.direction = 0;
-			else if(currCell.getPos().getY() == prev_y+1) mazeRunner.direction = 1;
-			else if(currCell.getPos().getX() == prev_x-1) mazeRunner.direction = 2;
-			else if(currCell.getPos().getX() == prev_x+1) mazeRunner.direction = 3;
+			if(currCell.getPos().getY() == prev_y-1 ) mazeRunner.direction[0] = '1';
+			else if(currCell.getPos().getY() == prev_y+1) mazeRunner.direction[1] = '1';
+			else if(currCell.getPos().getX() == prev_x-1) mazeRunner.direction[2] = '1';
+			else if(currCell.getPos().getX() == prev_x+1) mazeRunner.direction[3] = '1';
 
 			// DEBUGGING STATEMENT
 			// System.out.println("Agent is currently in " + currCell.getPos().getX() + ", " + currCell.getPos().getY());
@@ -735,8 +728,14 @@ public class Agent3 {
 				if (plannedPath == null) {
 					System.out.println("Maze is unsolvable.\n");
 					// System.out.println(mazeRunner.maze.toString());
+
 					return 'F';
 				}
+
+				mazeRunner.return_str= "";
+
+				mazeRunner.num_grids = 0;
+
 				badPath = false;
 				continue;
 			}
@@ -771,7 +770,7 @@ public class Agent3 {
 
 			//mazeRunner.writeAction(filename, mazeRunner.direction);
 
-			mazeRunner.addMatrix(mazeRunner.maze, mazeRunner.direction);
+			mazeRunner.addMatrix(mazeRunner.maze, mazeRunner.direction, currCell.getPos());
 
 			prev_y = currCell.getPos().getY();
 			prev_x = currCell.getPos().getX();
@@ -853,9 +852,11 @@ public class Agent3 {
 		int colNum = Integer.parseInt(args[1]);
 		double prob = Double.parseDouble(args[2]);
 		int successfulTrials = Integer.parseInt(args[3]);
-		File filename = new File("matrix.txt");
 
-		
+		int maze_num = 1;
+		int total_grid_run = 0;
+
+		File filename = new File("proto10_train.txt");
 
 		try{
 			//File filename = new File("matrix.txt");
@@ -869,10 +870,18 @@ public class Agent3 {
 		while (successfulTrials > 0) {
 			char result = run(rowNum, colNum, prob, filename);
 			if (result == 'S') {
+				System.out.println("Maze num: "+ maze_num);
+				maze_num += 1;
+				total_grid_run += total_grids;
+
 				successfulTrials--;
 			}
 		}
 		
+
+		System.out.println("total grids: "+ total_grids);
+		System.out.println("total grids run: "+ total_grid_run);
+
 		return;
 		
 	}
