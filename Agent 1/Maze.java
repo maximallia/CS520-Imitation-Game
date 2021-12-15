@@ -101,7 +101,7 @@ public class Maze {
         		}
 
         		if (getCell(j, i).isActuallyBlocked() && getCell(j, i).isVisited()) {
-        			builder.append("-1");
+        			builder.append("X");
         		}else if (getCell(j, i).isActuallyBlocked()) {
         			builder.append("0");
         		} 
