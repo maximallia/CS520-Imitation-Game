@@ -1,5 +1,7 @@
 // AUTHOR: Daniel Ying (INSERT NETID) and Zachary Tarman (zpt2)
 
+package agent3;
+
 import java.util.ArrayList;
 import java.awt.Point;
 import java.awt.Point;
@@ -82,8 +84,8 @@ public class Maze {
         this.maze_structure = maze_create(rows, cols, p);
     }
 
-    // TODO ADD TO THIS METHOD TO MAKE THE MAZE REALLY CLEAR
-    public String toString(Point agent) {
+
+    public String toStringGen(Point agent) {
         
         StringBuilder builder = new StringBuilder("\n");
 
@@ -110,6 +112,30 @@ public class Maze {
         			builder.append("1");
         		} else {
         			builder.append("0");
+        		}
+
+        	}
+
+        	builder.append("\n");
+        }
+
+        return builder.toString();
+    }
+    
+    
+    public String toStringInfer(Point agent) {
+        
+        StringBuilder builder = new StringBuilder("\n");
+
+        for (int i = 0; i < rows; i++) {
+        	
+        	for (int j = 0; j < cols; j++) {
+
+        		if (getCell(j, i).isVisited()) {
+        			int sensed = getCell(j, i).getBlocksSensed();
+        			builder.append("" + sensed);
+        		} else {
+        			builder.append("X");
         		}
 
         	}

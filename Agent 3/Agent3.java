@@ -1,5 +1,7 @@
 // AUTHOR: Zachary Tarman (zpt2)
 
+package agent3;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.awt.Point;
@@ -24,7 +26,8 @@ public class Agent3 {
 
 	public char[] direction = {'0','0','0','0'};
 
-	String return_str = "";
+	String return_str_gen = "";
+	String return_str_infer = "";
 
 	public int num_grids = 0;
 	public static int total_grids = 0;
@@ -43,30 +46,63 @@ public class Agent3 {
     }
 
 
-	public void addMatrix(Maze maze, char[] direction, Point agent){
+	public void addMatrixGen(Maze maze, char[] direction, Point agent){
         
-		return_str += maze.toString(agent);
+		return_str_gen += maze.toStringGen(agent);
 
 		for (int i=0; i<direction.length; i++){
 
-			return_str+= String.valueOf(direction[i]);
+			return_str_gen += String.valueOf(direction[i]);
 
 			direction[i] = '0';
 		}
 		num_grids += 1;
 
-		return_str += "\n";
+		return_str_gen += "\n";
+    }
+	
+	
+	
+	public void addMatrixInfer(Maze maze, char[] direction, Point agent){
+        
+		return_str_infer += maze.toStringInfer(agent);
+
+		for (int i=0; i<direction.length; i++){
+
+			return_str_infer += String.valueOf(direction[i]);
+
+			direction[i] = '0';
+		}
+
+		return_str_infer += "\n";
     }
 
 	
 	//public void writeMatrix(File filename, Maze maze, int direction){
-	public void writeMatrix(File filename){
+	public void writeMatrixGen(File filename_gen){
 		try{
-            FileWriter buffwrite = new FileWriter(filename, true);
+            FileWriter buffwrite = new FileWriter(filename_gen, true);
 
 			//buffwrite.write(maze.toString());
 			//buffwrite.write("\n");
-			buffwrite.write(return_str);
+			buffwrite.write(return_str_gen);
+			//buffwrite.write(String.valueOf(direction));
+			//buffwrite.write("\n");
+			buffwrite.close();
+			//System.out.println("Write Matrix SUCCESS!\n");
+
+        } catch( IOException e){
+            System.out.println("Write Matrix Error!\n");
+        }
+    }
+	
+	public void writeMatrixInfer(File filename_infer){
+		try{
+            FileWriter buffwrite = new FileWriter(filename_infer, true);
+
+			//buffwrite.write(maze.toString());
+			//buffwrite.write("\n");
+			buffwrite.write(return_str_infer);
 			//buffwrite.write(String.valueOf(direction));
 			//buffwrite.write("\n");
 			buffwrite.close();
@@ -77,6 +113,11 @@ public class Agent3 {
         }
     }
 
+	
+	
+	
+	
+	
 	// PLANNING METHOD (AKA A SINGLE ITERATION OF A* WITHOUT PHYSICALLY MOVING THE AGENT THROUGH THE MAZE)
 	public LinkedList<CellInfo> plan(CellInfo start) {
 
@@ -656,7 +697,7 @@ public class Agent3 {
 
 
 	// THIS IS THE METHOD THAT POWERS THE ENTIRE ALGORITHM, RUNNING THE AGENT UNTIL GOAL CELL OR IT DETERMINES THERE'S NO PATH TO GOAL
-	public static char run(int rowNum, int colNum, double prob, File filename) {
+	public static char run(int rowNum, int colNum, double prob, File filename_gen, File filename_infer) {
 
 		Agent3 mazeRunner = new Agent3(); // KEEPS TRACK OF ALL OF OUR DATA AND STRUCTURES
 		
@@ -732,10 +773,6 @@ public class Agent3 {
 					return 'F';
 				}
 
-				mazeRunner.return_str= "";
-
-				mazeRunner.num_grids = 0;
-
 				badPath = false;
 				continue;
 			}
@@ -770,7 +807,8 @@ public class Agent3 {
 
 			//mazeRunner.writeAction(filename, mazeRunner.direction);
 
-			mazeRunner.addMatrix(mazeRunner.maze, mazeRunner.direction, currCell.getPos());
+			mazeRunner.addMatrixGen(mazeRunner.maze, mazeRunner.direction, currCell.getPos());
+			mazeRunner.addMatrixInfer(mazeRunner.maze, mazeRunner.direction, currCell.getPos());
 
 			prev_y = currCell.getPos().getY();
 			prev_x = currCell.getPos().getX();
@@ -835,7 +873,8 @@ public class Agent3 {
 
 		System.out.println("Path Found!");
 
-		mazeRunner.writeMatrix(filename);
+		mazeRunner.writeMatrixGen(filename_gen);
+		mazeRunner.writeMatrixInfer(filename_infer);
 
 		// System.out.println(mazeRunner.maze.toString());
 		mazeRunner.printStats();
@@ -856,11 +895,15 @@ public class Agent3 {
 		int maze_num = 1;
 		int total_grid_run = 0;
 
-		File filename = new File("proto10_train.txt");
+		File filename_gen = new File("proto10_train_gen.txt");
+		File filename_infer = new File("proto10_train_infer.txt");
 
 		try{
 			//File filename = new File("matrix.txt");
-			if(filename.createNewFile()) System.out.println("File create: " + filename.getName());
+			if(filename_gen.createNewFile()) System.out.println("File create: " + filename_gen.getName());
+			else System.out.println("File already exists.");
+			
+			if(filename_infer.createNewFile()) System.out.println("File create: " + filename_infer.getName());
 			else System.out.println("File already exists.");
 		} catch (IOException e){
 			System.out.println("ERROR.");
@@ -868,7 +911,7 @@ public class Agent3 {
 		}
 
 		while (successfulTrials > 0) {
-			char result = run(rowNum, colNum, prob, filename);
+			char result = run(rowNum, colNum, prob, filename_gen, filename_infer);
 			if (result == 'S') {
 				System.out.println("Maze num: "+ maze_num);
 				maze_num += 1;

@@ -1,5 +1,7 @@
 // AUTHOR: Zachary Tarman (zpt2)
 
+package agent3;
+
 import java.awt.Point;
 
 public class CellInfo {
