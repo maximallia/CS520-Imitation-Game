@@ -15,3 +15,7 @@ The purpose of this project is to train an agent (rather than implementing a spe
 After sufficient training, the ML agent can run by simulating the appropriate gridworld and using the trained network to make action selections given the current state. Repeatedly simulating the original agent and the ML agent on identical gridworlds will allow a comparison of performance between the two.
 
 For this project, you’re welcome to use Tensorflow or PyTorch or whatever machine learning framework you see fit, or roll your own if you are inclined. All code must be your own, and commented sufficiently well as to indicate you understand what the underlying framework is doing. Half this project is building an agent to mimic an agent from Project 1, half this project is building an agent to mimic an agent from Project 2.
+
+MORE INFO: Assignment 4.pdf
+
+FINAL REPORT: Daniel Ying(dty16), Zachary Tarman(zpt2), Pravin Kumaar(pr482)_proj4.pdf
